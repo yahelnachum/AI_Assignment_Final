@@ -1,8 +1,10 @@
-package base.game.engine;
+package entities.base.game.engine;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import entities.base.game.engine.Position;
 
 public class TestPosition {
 

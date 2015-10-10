@@ -1,4 +1,4 @@
-package base.game.engine;
+package entities.base.game.engine;
 
 public class BasicObject {
 
