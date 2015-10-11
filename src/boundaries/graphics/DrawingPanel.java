@@ -47,9 +47,15 @@ public class DrawingPanel extends JPanel {
 		box_length_x = (panelWidth - margin * (num_of_boxes_x + 1)) / num_of_boxes_x;
 		box_length_y = (panelHeight - margin * (num_of_boxes_y + 1)) / num_of_boxes_y;
 		
+		String longestString = "";
+		ArrayList<BasicObject> objectList = GameManager.getInstance().getObjectsList();
+		for (int i = 0; i < objectList.size(); i++){
+			if(objectList.get(i).getName().length() > longestString.length())
+				longestString = objectList.get(i).getName(); 
+		}
+		
 		for(int i = 8; i < 100; i++){
-			
-			if(getFontMetrics(new Font("Consolas", Font.PLAIN, i)).getHeight() > box_length_y){
+			if(getFontMetrics(new Font("Consolas", Font.PLAIN, i)).stringWidth(longestString) > box_length_x){
 				heightFontSize = i-1;
 				i = 100;
 			}

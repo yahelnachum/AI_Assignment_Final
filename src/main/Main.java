@@ -17,15 +17,15 @@ public class Main {
 		gm.setWorldHeight(10);
 		BasicObject obj1 = new BasicObject(new Position(3, 6));
 		obj1.setColor(Color.GREEN);
-		obj1.setName("E");
+		obj1.setName("Enemy");
 		gm.addObjectToList(obj1);
 		BasicObject obj2 = new BasicObject(new Position(2, 3));
 		obj2.setColor(Color.cyan);
-		obj2.setName("H");
+		obj2.setName("Hero");
 		gm.addObjectToList(obj2);
 		BasicObject obj3 = new BasicObject(new Position(3, 7));
 		obj3.setColor(Color.RED);
-		obj3.setName("W");
+		obj3.setName("Wall");
 		gm.addObjectToList(obj3);
 		GameWindow gw = GameWindow.getInstance();
 		gw.startUp(500, 500);
