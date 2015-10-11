@@ -22,7 +22,7 @@ public class GameWindow extends JFrame {
 	private int window_position_x = 0;
 	private int window_position_y = 0;
 	
-	private DrawingPanel contentPane;
+	private DrawingPanel contentPane = DrawingPanel.getInstance();
 	
 	private static GameWindow gameWindow = new GameWindow();
 
@@ -46,10 +46,10 @@ public class GameWindow extends JFrame {
 		window_position_y = (int) (dim.getHeight() / 2 - 7 - window_height / 2);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(window_position_x, window_position_y, window_width, window_height + WINDOW_BAR_HEIGHT);
-		contentPane = new DrawingPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.startUp();
 	}
 	
 	public int getWindowWidth(){

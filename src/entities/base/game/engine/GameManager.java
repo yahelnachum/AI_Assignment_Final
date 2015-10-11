@@ -21,7 +21,9 @@ public class GameManager {
 	}
 	
 	public void updateObjects(){
-		
+		for(int i = 0; i < objectList.size(); i++){
+			objectList.get(i).step();
+		}
 	}
 	
 	public void drawObjects(){
@@ -36,6 +38,10 @@ public class GameManager {
 		if(objectList.remove(obj))
 			return 0;
 		return -1;
+	}
+	
+	public ArrayList<BasicObject> getObjectsList(){
+		return objectList;
 	}
 	
 	public void setWorldWidth(int world_width){
