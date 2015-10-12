@@ -20,6 +20,7 @@ public class GameManager {
 	
 	// if the game is over
 	private boolean gameOver = false;
+	private static int stepCount = 0;
 	
 	
 	/**
@@ -38,6 +39,7 @@ public class GameManager {
 		for(int i = 0; i < objectList.size(); i++){
 			objectList.get(i).step();
 		}
+		stepCount++;
 	}
 
 	/**
@@ -113,5 +115,17 @@ public class GameManager {
 	 */
 	public boolean getGameOver(){
 		return gameOver;
+	}
+	
+	public boolean objectAtPosition(Position pos){
+		for(int i = 0; i < objectList.size(); i++){
+			if(objectList.get(i).getPosition().compareTo(pos) == 0)
+				return true;
+		}
+		return false;
+	}
+	
+	public int getStepCount(){
+		return stepCount;
 	}
 }

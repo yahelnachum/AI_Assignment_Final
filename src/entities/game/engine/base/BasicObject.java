@@ -2,6 +2,8 @@ package entities.game.engine.base;
 
 import java.awt.Color;
 
+import entities.utilities.Utility;
+
 /**
  * @author Yahel
  * Basic object of the game engine
@@ -84,5 +86,14 @@ public class BasicObject {
 	 */
 	public void step(){
 		
+	}
+	
+	public int move(Direction dir){
+		Position newPos = Utility.getPositionInDirection(getPosition(), dir);
+		if(GameManager.getInstance().objectAtPosition(newPos)){
+			return -1;
+		}
+		setPosition(newPos);
+		return 0;
 	}
 }

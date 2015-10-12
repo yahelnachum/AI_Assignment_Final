@@ -43,8 +43,8 @@ public class Main {
 	 */
 	public static void setUpGame(){
 		GameManager gm = GameManager.getInstance();
-		gm.setWorldWidth(12);
-		gm.setWorldHeight(12);
+		gm.setWorldWidth(7);
+		gm.setWorldHeight(7);
 		new Enemy(new Position(3, 6));
 		new Hero(new Position(1,4));
 		new Wall(new Position(2,5));
@@ -56,7 +56,7 @@ public class Main {
 	 */
 	public static void setUpWindow(){
 		GameWindow gw = GameWindow.getInstance();
-		gw.startUp(1000, 1000);
+		gw.startUp(500, 500);
 		gw.setVisible(true);
 	}
 }
