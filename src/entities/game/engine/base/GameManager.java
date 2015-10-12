@@ -125,7 +125,23 @@ public class GameManager {
 		return false;
 	}
 	
+	public BasicObject getObjectAtPosition(Position pos){
+		for(int i = 0; i < objectList.size(); i++){
+			if(objectList.get(i).getPosition().compareTo(pos) == 0)
+				return objectList.get(i);
+		}
+		return null;
+	}
+	
 	public int getStepCount(){
 		return stepCount;
+	}
+	
+	/**
+	 * Reset the game by removing all the objects
+	 */
+	public void resetGame(){
+		objectList.clear();
+		gameOver = false;
 	}
 }

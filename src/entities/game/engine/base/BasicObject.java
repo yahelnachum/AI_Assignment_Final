@@ -93,6 +93,12 @@ public class BasicObject {
 		if(GameManager.getInstance().objectAtPosition(newPos)){
 			return -1;
 		}
+		if(newPos.getX() < 0 || 
+		   newPos.getY() < 0 ||
+		   newPos.getX() > GameManager.getInstance().getWorldWidth() - 1 || 
+		   newPos.getY() > GameManager.getInstance().getWorldHeight() - 1){
+			return -2;
+		}
 		setPosition(newPos);
 		return 0;
 	}

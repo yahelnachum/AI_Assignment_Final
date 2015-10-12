@@ -16,24 +16,32 @@ public class Main {
 		// game manager and window instances
 		GameManager gm = GameManager.getInstance();
 		GameWindow gw = GameWindow.getInstance();
-		
+		gm.setWorldWidth(7);
+		gm.setWorldHeight(7);
 		// set up game then set up window
 		setUpGame();
 		setUpWindow();
 		
-		// run game loop until game over
-		Clock clock = new Clock();
-		long fps = 3;
-		while(gm.getGameOver() == false){
-			gm.step();
-			gw.repaint();
-			long actualTime = clock.split();
+		for(int i = 0; i < 10; i++){
+
 			
-			// sleep for some time
-			if(actualTime < 1000 / fps){
-				Thread.sleep(1000 / fps - actualTime); 
+			// run game loop until game over
+			Clock clock = new Clock();
+			long fps = 30;
+			while(gm.getGameOver() == false){
+				gm.step();
+				gw.repaint();
+				long actualTime = clock.split();
+				
+				// sleep for some time
+				if(actualTime < 1000 / fps){
+					Thread.sleep(1000 / fps - actualTime); 
+				}
+				clock.delta();
 			}
-			clock.delta();
+			
+			gm.resetGame();
+			setUpGame();
 		}
 	}
 	
@@ -42,17 +50,14 @@ public class Main {
 	 * Set up the game objects
 	 */
 	public static void setUpGame(){
-		GameManager gm = GameManager.getInstance();
-		gm.setWorldWidth(7);
-		gm.setWorldHeight(7);
-		new Enemy(new Position(3, 6));
-		new Hero(new Position(1,4));
-		new Wall(new Position(2,5));
+		new Enemy(new Position(6, 6));
+		new Hero(new Position(0,0));
+		new Wall(new Position(3,3));
 	}
 	
 	/**
 	 * Set up the window width and height
-	 * Set the window to be visable
+	 * Set the window to be visible
 	 */
 	public static void setUpWindow(){
 		GameWindow gw = GameWindow.getInstance();
