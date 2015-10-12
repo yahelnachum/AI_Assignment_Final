@@ -1,0 +1,47 @@
+package entities.game.engine.base;
+
+import static org.junit.Assert.*;
+
+import java.awt.Color;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class TestGameManager {
+
+	@Before
+	public void setUp() throws Exception {
+	}
+
+	@Test
+	public void test() {
+		GameManager inst1 = GameManager.getInstance();
+		GameManager inst2 = GameManager.getInstance();
+		
+		assertEquals(inst1, inst2);
+		
+		inst1.setWorldWidth(10);
+		inst1.setWorldHeight(15);
+		
+		assertEquals(inst1.getWorldWidth(), 10);
+		assertEquals(inst1.getWorldHeight(), 15);
+		assertEquals(inst1.getGameOver(), false);
+		assertEquals(inst1.getObjectsList().size(), 0);
+		
+		inst1.setGameOver(true);
+		
+		assertEquals(inst1.getGameOver(), true);
+		
+		BasicObject obj1 = new BasicObject();
+		
+		assertEquals(inst1.getObjectsList().size(), 1);
+		assertEquals(inst1.getObjectsList().get(0).getPosition().compareTo(new Position()), 0);
+		assertEquals(inst1.getObjectsList().get(0).getColor(), Color.WHITE);
+		assertEquals(inst1.getObjectsList().get(0).getName(), "BasObj");
+		
+		assertEquals(inst1.removeObectFromList(obj1), 0);
+		assertEquals(inst1.removeObectFromList(obj1), -1);
+		
+	}
+
+}
