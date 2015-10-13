@@ -87,4 +87,8 @@ public class Position implements Comparable<Position>{
 		else
 			return 0;
 	}
+	
+	public int getManhattanDistance(Position toPos){
+		return Math.abs(toPos.getX() - this.getX()) + Math.abs(toPos.getY() - this.getY()); 
+	}
 }

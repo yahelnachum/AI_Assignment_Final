@@ -4,6 +4,7 @@ import boundaries.graphics.GameWindow;
 import entities.game.engine.base.GameManager;
 import entities.game.engine.base.Position;
 import entities.game.engine.extended.Enemy;
+import entities.game.engine.extended.Goal;
 import entities.game.engine.extended.Hero;
 import entities.game.engine.extended.Wall;
 import entities.utilities.Clock;
@@ -16,30 +17,37 @@ public class Main {
 		// game manager and window instances
 		GameManager gm = GameManager.getInstance();
 		GameWindow gw = GameWindow.getInstance();
-		gm.setWorldWidth(7);
-		gm.setWorldHeight(7);
+		gm.setWorldWidth(20);
+		gm.setWorldHeight(20);
 		// set up game then set up window
 		setUpGame();
 		setUpWindow();
+		Thread.sleep(500);
 		
-		for(int i = 0; i < 10; i++){
-
-			
+		long fps = 50;
+		long numOfGameStepsToSkip = 100;
+		long showResultForMilliseconds = 500;
+		Clock clock = new Clock();
+		for(int i = 0; i < 100; i++){
+		
+			clock.delta();
 			// run game loop until game over
-			Clock clock = new Clock();
-			long fps = 30;
+			gw.repaint();
 			while(gm.getGameOver() == false){
 				gm.step();
-				gw.repaint();
-				long actualTime = clock.split();
-				
-				// sleep for some time
-				if(actualTime < 1000 / fps){
-					Thread.sleep(1000 / fps - actualTime); 
+				if(gm.getStepCount() % numOfGameStepsToSkip == 0){
+					gw.repaint();
+					long actualTime = clock.split();
+					
+					// sleep for some time
+					if(actualTime < 1000 / fps){
+						Thread.sleep(1000 / fps - actualTime); 
+					}
+					clock.delta();
 				}
-				clock.delta();
 			}
-			
+			gw.repaint();
+			Thread.sleep(showResultForMilliseconds);
 			gm.resetGame();
 			setUpGame();
 		}
@@ -50,9 +58,22 @@ public class Main {
 	 * Set up the game objects
 	 */
 	public static void setUpGame(){
-		new Enemy(new Position(6, 6));
+		Position center = new Position(17,17);
+		new Enemy(new Position(center.getX() - 1,center.getY()-1));
+		new Enemy(new Position(center.getX(),center.getY()-1));
+		new Enemy(new Position(center.getX()+1,center.getY()-1));
+		
+		new Enemy(new Position(center.getX()-1,center.getY()));
+		new Goal (new Position(center.getX(),center.getY()));
+		new Enemy(new Position(center.getX()+1,center.getY()));
+		
+		new Enemy(new Position(center.getX()-1,center.getY()+1));
+		new Enemy(new Position(center.getX()+1,center.getY()+1));
+		
+		for(int i = 0; i < 10; i++){
+			new Wall(new Position(5+i, 15-i));
+		}
 		new Hero(new Position(0,0));
-		new Wall(new Position(3,3));
 	}
 	
 	/**

@@ -133,6 +133,37 @@ public class GameManager {
 		return null;
 	}
 	
+	public ArrayList<BasicObject> getObjectsWithName(String name){
+		ArrayList<BasicObject> objWithName = new ArrayList<BasicObject>();
+		for(int i = 0; i < objectList.size(); i++){
+			if(objectList.get(i).getName().compareTo(name) == 0)
+				objWithName.add(objectList.get(i));
+		}
+		
+		return objWithName;
+	}
+	
+	public ArrayList<BasicObject> getObjectsInAdjecentSquares(Position pos){
+		ArrayList<BasicObject> objs = new ArrayList<BasicObject>();
+		
+		for(int i = -1; i < 2; i++){
+			for(int j = -1; j < 2; j++){
+				if(i != 0 && j != 0){
+					Position checkPos = new Position(pos.getX() + i, pos.getY() + j);
+					BasicObject checkObj = getObjectAtPosition(checkPos);
+					if(checkObj != null)
+						objs.add(checkObj);
+				}
+			}
+		}
+		
+		return objs;
+	}
+	
+	public boolean isObjectNameInAdjacentSquares(Position pos){
+		return false;
+	}
+	
 	public int getStepCount(){
 		return stepCount;
 	}
