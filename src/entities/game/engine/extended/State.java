@@ -33,11 +33,16 @@ public class State {
 				   objAtPos.getName().compareTo(Goal.GOAL_TYPE) == 0){
 					goalProximity = 3;
 		}
+		
+		BasicObject goal = GameManager.getInstance().getObjectsWithName(Goal.GOAL_TYPE).get(0);
+		if(pos.getManhattanDistance(goal.getPosition()) < previous.getManhattanDistance(goal.getPosition()))
+			closerToGoal = true;
 	}
 	
-	public State(int enemyProximity, int goalProximity){
+	public State(int enemyProximity, int goalProximity, boolean closerToGoal){
 		this.enemyProximity = enemyProximity;
 		this.goalProximity = goalProximity;
+		this.closerToGoal = closerToGoal;
 	}
 	
 	public boolean equals(Object obj){
@@ -51,7 +56,7 @@ public class State {
 	}
 	
 	public int hashCode(){
-		return 19*enemyProximity + 23*goalProximity;
+		return 19*enemyProximity + 23*goalProximity + (closerToGoal? 29:41);
 	}
 	
 	

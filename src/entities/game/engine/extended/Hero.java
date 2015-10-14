@@ -34,6 +34,8 @@ public class Hero extends BasicObject{
 	}
 	
 	public void step(){
+		Position previousPos = getPosition();
+
 		// increment steps
 		steps++;
 		
@@ -72,7 +74,7 @@ public class Hero extends BasicObject{
 		// get information from best choice and random choice
 		int returnNum = 0;
 		Direction dir = Direction.NORTH;
-		State current = new State(0,0);
+		State current = new State(0,0, false);
 		
 		// sort moves based on value (highest to lowest)
 		Collections.sort(moves);
@@ -127,6 +129,13 @@ public class Hero extends BasicObject{
 				setColor(Color.GREEN);
 				GameManager.getInstance().setGameOver(true);
 			}
+			
+			if(obj.getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
+				setPosition(obj.getPosition());
+			}
+		}
+		else if(returnNum == 0){
+			new BreadCrumb(previousPos);
 		}
 	}
 	

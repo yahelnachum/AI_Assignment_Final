@@ -24,17 +24,28 @@ public class Main {
 		setUpGame();
 		setUpWindow();
 		
-		Hero.lookUpTable.put(new State(0,3), 1000.0);
-		Hero.lookUpTable.put(new State(1,3), 1000.0);
-		Hero.lookUpTable.put(new State(2,3), 1000.0);
-		Hero.lookUpTable.put(new State(3,3), -1000.0);
-		Hero.lookUpTable.put(new State(3,2), -1000.0);
-		Hero.lookUpTable.put(new State(3,1), -1000.0);
-		Hero.lookUpTable.put(new State(3,0), -1000.0);
+		Hero.lookUpTable.put(new State(0,3,true), 1000.0);
+		Hero.lookUpTable.put(new State(1,3,true), 1000.0);
+		Hero.lookUpTable.put(new State(2,3,true), 1000.0);
+		
+		Hero.lookUpTable.put(new State(0,3,false), 1000.0);
+		Hero.lookUpTable.put(new State(1,3,false), 1000.0);
+		Hero.lookUpTable.put(new State(2,3,false), 1000.0);
+		
+		Hero.lookUpTable.put(new State(3,3,false), -1000.0);
+		Hero.lookUpTable.put(new State(3,2,false), -1000.0);
+		Hero.lookUpTable.put(new State(3,1,false), -1000.0);
+		Hero.lookUpTable.put(new State(3,0,false), -1000.0);
+		
+		Hero.lookUpTable.put(new State(3,3,true), -1000.0);
+		Hero.lookUpTable.put(new State(3,2,true), -1000.0);
+		Hero.lookUpTable.put(new State(3,1,true), -1000.0);
+		Hero.lookUpTable.put(new State(3,0,true), -1000.0);
 		
 		for(int j = 0; j < 4; j++){
 			for(int k = 0; k < 4; k++){
-				System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k)));
+				System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k, false)));
+				System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k, true)));
 			}
 			System.out.println();
 		}
@@ -43,11 +54,11 @@ public class Main {
 		Thread.sleep(500);
 		
 		long fps = 100;
-		long numOfGameStepsToSkip = 100;
-		long showResultForMilliseconds = 500;
+		long numOfGameStepsToSkip = 1;
+		long showResultForMilliseconds = 100;
 		Clock clock = new Clock();
 		for(int i = 0; i < 100; i++){
-		
+			
 			clock.delta();
 			// run game loop until game over
 			gw.repaint();
@@ -68,7 +79,8 @@ public class Main {
 			Thread.sleep(showResultForMilliseconds);
 			for(int j = 0; j < 4; j++){
 				for(int k = 0; k < 4; k++){
-					System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k)));
+					System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k, false)));
+					System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k, true)));
 				}
 				System.out.println();
 			}
