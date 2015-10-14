@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import entities.game.engine.base.BasicObject;
 import entities.game.engine.base.GameManager;
 import entities.game.engine.base.Position;
+import entities.game.engine.extended.Hero;
 
 /**
  * @author Yahel
@@ -106,19 +107,28 @@ public class DrawingPanel extends JPanel {
 		// draw them in their correct positions, with their color, and their names
 		ArrayList<BasicObject> objectList = GameManager.getInstance().getObjectsList();
 		for (int i = 0; i < objectList.size(); i++){
-			// get position and calculate panel position
-			Position pos = objectList.get(i).getPosition();
-			double x = (pos.getX()+1) * (box_length_x + margin) - box_length_x + 1;
-			double y = (pos.getY()+1) * (box_length_y + margin) - box_length_y + 1;
-			
-			// fill in a rectangle at the objects position
-			g.setColor(objectList.get(i).getColor());
-			g.fillRect((int)x, (int)y, (int)(box_length_x-1), (int)(box_length_y-1));
-			
-			// write the name over the rectangle drawn
-			g.setColor(Color.BLACK);
-			g.drawString(objectList.get(i).getName(), (int)x, (int)(y + box_length_y - 2));
+			drawObject(g, objectList.get(i));
 		}
+		
+		BasicObject hero = GameManager.getInstance().getObjectsWithName(Hero.HERO_TYPE).get(0);
+		if(hero != null){
+			drawObject(g, hero);
+		}
+	}
+	
+	public void drawObject(Graphics g, BasicObject obj){
+		// get position and calculate panel position
+		Position pos = obj.getPosition();
+		double x = (pos.getX()+1) * (box_length_x + margin) - box_length_x + 1;
+		double y = (pos.getY()+1) * (box_length_y + margin) - box_length_y + 1;
+		
+		// fill in a rectangle at the objects position
+		g.setColor(obj.getColor());
+		g.fillRect((int)x, (int)y, (int)(box_length_x-1), (int)(box_length_y-1));
+		
+		// write the name over the rectangle drawn
+		g.setColor(Color.BLACK);
+		g.drawString(obj.getName(), (int)x, (int)(y + box_length_y - 2));
 	}
 
 }

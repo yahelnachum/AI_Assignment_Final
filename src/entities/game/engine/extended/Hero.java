@@ -24,7 +24,7 @@ public class Hero extends BasicObject{
 	public Hero(Position pos){
 		setPosition(pos);
 		setName(HERO_TYPE);
-		setColor(Color.BLUE);
+		setColor(new Color(0x00ffff));
 		previousState = new State(pos, pos);
 		lives++;
 	}
@@ -62,13 +62,30 @@ public class Hero extends BasicObject{
 		if(lookUpTable.get(rightState) == null)
 			lookUpTable.put(rightState, 0.0);
 		
-
+		int delta[] = new int[4];
+		if(GameManager.getInstance().getObjectAtPosition(up) != null && GameManager.getInstance().getObjectAtPosition(up).getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
+			BreadCrumb bc = (BreadCrumb) GameManager.getInstance().getObjectAtPosition(up);
+			delta[0] = bc.getStepMade();
+		}
+		if(GameManager.getInstance().getObjectAtPosition(down) != null && GameManager.getInstance().getObjectAtPosition(down).getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
+			BreadCrumb bc = (BreadCrumb) GameManager.getInstance().getObjectAtPosition(down);
+			delta[1] = bc.getStepMade();
+		}
+		if(GameManager.getInstance().getObjectAtPosition(left) != null && GameManager.getInstance().getObjectAtPosition(left).getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
+			BreadCrumb bc = (BreadCrumb) GameManager.getInstance().getObjectAtPosition(left);
+			delta[2] = bc.getStepMade();
+		}
+		if(GameManager.getInstance().getObjectAtPosition(right) != null && GameManager.getInstance().getObjectAtPosition(right).getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
+			BreadCrumb bc = (BreadCrumb) GameManager.getInstance().getObjectAtPosition(right);
+			delta[3] = bc.getStepMade();
+		}
+	
 		// create a list of possible moves
 		ArrayList<Move> moves = new ArrayList<Move>(); 
-		moves.add(new Move(upState, up, lookUpTable.get(upState)));
-		moves.add(new Move(downState, down, lookUpTable.get(downState)));
-		moves.add(new Move(leftState, left, lookUpTable.get(leftState)));
-		moves.add(new Move(rightState, right, lookUpTable.get(rightState)));
+		moves.add(new Move(upState, up, lookUpTable.get(upState), delta[0]));
+		moves.add(new Move(downState, down, lookUpTable.get(downState), delta[1]));
+		moves.add(new Move(leftState, left, lookUpTable.get(leftState), delta[2]));
+		moves.add(new Move(rightState, right, lookUpTable.get(rightState), delta[3]));
 	
 
 		// get information from best choice and random choice
@@ -129,13 +146,13 @@ public class Hero extends BasicObject{
 				setColor(Color.GREEN);
 				GameManager.getInstance().setGameOver(true);
 			}
-			
-			if(obj.getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
-				setPosition(obj.getPosition());
-			}
 		}
-		else if(returnNum == 0){
-			new BreadCrumb(previousPos);
+		if(returnNum == 0){
+			BasicObject obj = GameManager.getInstance().getObjectAtPosition(previousPos);
+			if(obj != null)
+				GameManager.getInstance().removeObectFromList(obj);
+			
+			new BreadCrumb(previousPos, GameManager.getInstance().getStepCount());
 		}
 	}
 	

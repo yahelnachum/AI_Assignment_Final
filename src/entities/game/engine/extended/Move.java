@@ -7,11 +7,13 @@ public class Move implements Comparable<Move>{
 	private State s = new State(new Position(), new Position());
 	private Position pos = new Position();
 	private double value = 0;
+	private int delta = 0;
 	
-	public Move(State s, Position pos, double value){
+	public Move(State s, Position pos, double value, int delta){
 		this.s = s;
 		this.pos = pos;
 		this.value = value;
+		this.delta = delta;
 	}
 	
 	public State getState(){
@@ -23,7 +25,7 @@ public class Move implements Comparable<Move>{
 	}
 	
 	public double getValue(){
-		return value;
+		return value;// - delta;
 	}
 
 	@Override

@@ -13,6 +13,7 @@ public class GameManager {
 	
 	// the objects in the game world
 	private ArrayList<BasicObject> objectList = new ArrayList<BasicObject>();
+	private ArrayList<BasicObject> collideableObjects = new ArrayList<BasicObject>();
 	
 	// game world lengths
 	private int world_width = 0;
@@ -181,5 +182,22 @@ public class GameManager {
 	public void resetGame(){
 		objectList.clear();
 		gameOver = false;
+		stepCount = 0;
+	}
+	
+	public ArrayList<BasicObject> getCollidableObjectsList(){
+		return collideableObjects;
+	}
+	
+	public void addToCollidableObjectsList(BasicObject obj){
+		collideableObjects.add(obj);
+	}
+	
+	public boolean objectInCollidableObjectsList(BasicObject obj){
+		for(int i = 0; i < collideableObjects.size(); i++){
+			if(collideableObjects.get(i).getName().compareTo(obj.getName()) == 0)
+				return true;
+		}
+		return false;
 	}
 }

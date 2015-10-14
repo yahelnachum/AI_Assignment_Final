@@ -91,7 +91,9 @@ public class BasicObject {
 	public int move(Direction dir){
 		Position newPos = Utility.getPositionInDirection(getPosition(), dir);
 		if(GameManager.getInstance().objectAtPosition(newPos)){
-			return -1;
+			BasicObject obj = GameManager.getInstance().getObjectAtPosition(newPos);
+			if(GameManager.getInstance().objectInCollidableObjectsList(obj))
+				return -1;
 		}
 		if(newPos.getX() < 0 || 
 		   newPos.getY() < 0 ||

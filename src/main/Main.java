@@ -20,6 +20,9 @@ public class Main {
 		GameWindow gw = GameWindow.getInstance();
 		gm.setWorldWidth(20);
 		gm.setWorldHeight(20);
+		gm.addToCollidableObjectsList(new Wall(new Position(-100,-100)));
+		gm.addToCollidableObjectsList(new Enemy(new Position(-100,-100)));
+		gm.addToCollidableObjectsList(new Goal(new Position(-100,-100)));
 		// set up game then set up window
 		setUpGame();
 		setUpWindow();
@@ -53,12 +56,12 @@ public class Main {
 		
 		Thread.sleep(500);
 		
-		long fps = 100;
-		long numOfGameStepsToSkip = 1;
-		long showResultForMilliseconds = 100;
+		long fps = 40;
+		long numOfGameStepsToSkip = 250;
+		long showResultForMilliseconds = 500;
 		Clock clock = new Clock();
-		for(int i = 0; i < 100; i++){
-			
+		for(int i = 0; i < 1000; i++){
+			System.out.printf("Trial number: %d\n", i);
 			clock.delta();
 			// run game loop until game over
 			gw.repaint();
@@ -79,13 +82,12 @@ public class Main {
 			Thread.sleep(showResultForMilliseconds);
 			for(int j = 0; j < 4; j++){
 				for(int k = 0; k < 4; k++){
-					System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k, false)));
-					System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k, true)));
+					System.out.printf("%-10.2f ", Hero.lookUpTable.get(new State(j,k, false)));
+					System.out.printf("%-10.2f ", Hero.lookUpTable.get(new State(j,k, true)));
 				}
 				System.out.println();
 			}
-			System.out.println();
-			System.out.printf("Number of steps made: %d\n", ((Hero)gm.getObjectsWithName(Hero.HERO_TYPE).get(0)).getSteps());
+			System.out.printf("Number of steps made: %d\n\n", ((Hero)gm.getObjectsWithName(Hero.HERO_TYPE).get(0)).getSteps());
 			gm.resetGame();
 			setUpGame();
 			
@@ -119,6 +121,7 @@ public class Main {
 		for(int i = 0; i < 5; i++){
 			new Wall(new Position(15-i, 5-i));
 		}
+
 		new Hero(new Position(0,0));
 	}
 	
@@ -128,7 +131,7 @@ public class Main {
 	 */
 	public static void setUpWindow(){
 		GameWindow gw = GameWindow.getInstance();
-		gw.startUp(500, 500);
+		gw.startUp(1000, 1000);
 		gw.setVisible(true);
 	}
 }

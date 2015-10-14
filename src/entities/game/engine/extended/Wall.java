@@ -10,6 +10,6 @@ public class Wall extends BasicObject{
 	public Wall(Position pos){
 		setPosition(pos);
 		setName("Wall");
-		setColor(Color.GRAY);
+		setColor(Color.MAGENTA);
 	}
 }
