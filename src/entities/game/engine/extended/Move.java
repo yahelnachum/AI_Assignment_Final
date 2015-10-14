@@ -4,19 +4,25 @@ import entities.game.engine.base.Position;
 
 public class Move implements Comparable<Move>{
 
+	private State s = new State(new Position(), new Position());
 	private Position pos = new Position();
-	private int value = 0;
+	private double value = 0;
 	
-	public Move(Position pos, int value){
+	public Move(State s, Position pos, double value){
+		this.s = s;
 		this.pos = pos;
 		this.value = value;
+	}
+	
+	public State getState(){
+		return s;
 	}
 	
 	public Position getPosition(){
 		return pos;
 	}
 	
-	public int getValue(){
+	public double getValue(){
 		return value;
 	}
 

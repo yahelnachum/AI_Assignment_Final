@@ -14,7 +14,7 @@ public class TestGameManager {
 	}
 
 	@Test
-	public void test() {
+	public void testBasic() {
 		GameManager inst1 = GameManager.getInstance();
 		GameManager inst2 = GameManager.getInstance();
 		
@@ -41,6 +41,21 @@ public class TestGameManager {
 		
 		assertEquals(inst1.removeObectFromList(obj1), 0);
 		assertEquals(inst1.removeObectFromList(obj1), -1);
+		
+	}
+	
+	@Test
+	public void testAdjacency() {
+		GameManager inst1 = GameManager.getInstance();
+		
+		new BasicObject(new Position(3,3)).setName("blue");
+		new BasicObject(new Position(4,4)).setName("red");
+		new BasicObject(new Position(5,5)).setName("green");
+		
+		assertEquals(inst1.isObjectNameInAdjacentSquares("red", new Position(5,5), 1, 0), true);
+		assertEquals(inst1.isObjectNameInAdjacentSquares("blue", new Position(5,5), 2, 1), true);
+		assertEquals(inst1.isObjectNameInAdjacentSquares("red", new Position(5,5), 2, 0), true);
+		assertEquals(inst1.isObjectNameInAdjacentSquares("blue", new Position(5,5), 2, 0), true);
 		
 	}
 

@@ -6,6 +6,7 @@ import entities.game.engine.base.Position;
 import entities.game.engine.extended.Enemy;
 import entities.game.engine.extended.Goal;
 import entities.game.engine.extended.Hero;
+import entities.game.engine.extended.State;
 import entities.game.engine.extended.Wall;
 import entities.utilities.Clock;
 
@@ -22,9 +23,26 @@ public class Main {
 		// set up game then set up window
 		setUpGame();
 		setUpWindow();
+		
+		Hero.lookUpTable.put(new State(0,3), 1000.0);
+		Hero.lookUpTable.put(new State(1,3), 1000.0);
+		Hero.lookUpTable.put(new State(2,3), 1000.0);
+		Hero.lookUpTable.put(new State(3,3), -1000.0);
+		Hero.lookUpTable.put(new State(3,2), -1000.0);
+		Hero.lookUpTable.put(new State(3,1), -1000.0);
+		Hero.lookUpTable.put(new State(3,0), -1000.0);
+		
+		for(int j = 0; j < 4; j++){
+			for(int k = 0; k < 4; k++){
+				System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k)));
+			}
+			System.out.println();
+		}
+		System.out.println();
+		
 		Thread.sleep(500);
 		
-		long fps = 50;
+		long fps = 100;
 		long numOfGameStepsToSkip = 100;
 		long showResultForMilliseconds = 500;
 		Clock clock = new Clock();
@@ -48,8 +66,18 @@ public class Main {
 			}
 			gw.repaint();
 			Thread.sleep(showResultForMilliseconds);
+			for(int j = 0; j < 4; j++){
+				for(int k = 0; k < 4; k++){
+					System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k)));
+				}
+				System.out.println();
+			}
+			System.out.println();
+			System.out.printf("Number of steps made: %d\n", ((Hero)gm.getObjectsWithName(Hero.HERO_TYPE).get(0)).getSteps());
 			gm.resetGame();
 			setUpGame();
+			
+			
 		}
 	}
 	
@@ -72,6 +100,12 @@ public class Main {
 		
 		for(int i = 0; i < 10; i++){
 			new Wall(new Position(5+i, 15-i));
+		}
+		for(int i = 0; i < 5; i++){
+			new Wall(new Position(5-i, 15-i));
+		}
+		for(int i = 0; i < 5; i++){
+			new Wall(new Position(15-i, 5-i));
 		}
 		new Hero(new Position(0,0));
 	}

@@ -143,12 +143,13 @@ public class GameManager {
 		return objWithName;
 	}
 	
-	public ArrayList<BasicObject> getObjectsInAdjecentSquares(Position pos){
+	public ArrayList<BasicObject> getObjectsInAdjecentSquares(Position pos, int outerRadius, int innerRadius){
 		ArrayList<BasicObject> objs = new ArrayList<BasicObject>();
 		
-		for(int i = -1; i < 2; i++){
-			for(int j = -1; j < 2; j++){
-				if(i != 0 && j != 0){
+		for(int i = -1*outerRadius; i <= outerRadius; i++){
+			for(int j = -1*outerRadius; j <= outerRadius; j++){
+				if(!(-1*innerRadius <= i && i <= innerRadius &&
+				     -1*innerRadius <= j && j <= innerRadius)){
 					Position checkPos = new Position(pos.getX() + i, pos.getY() + j);
 					BasicObject checkObj = getObjectAtPosition(checkPos);
 					if(checkObj != null)
@@ -160,7 +161,13 @@ public class GameManager {
 		return objs;
 	}
 	
-	public boolean isObjectNameInAdjacentSquares(Position pos){
+	public boolean isObjectNameInAdjacentSquares(String name, Position pos, int outerRadius, int innerRadius){
+		ArrayList<BasicObject> list = getObjectsInAdjecentSquares(pos, outerRadius, innerRadius);
+		for(int i = 0; i < list.size(); i++){
+			if(list.get(i).getName().compareTo(name) == 0){
+				return true;
+			}
+		}
 		return false;
 	}
 	

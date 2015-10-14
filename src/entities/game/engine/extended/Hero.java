@@ -14,101 +14,115 @@ import entities.utilities.Utility;
 
 public class Hero extends BasicObject{
 
+	public static String HERO_TYPE = "Hero";
 	private static Random randomObj = new Random();
-	private static HashMap<State, Integer> lookUpTable = new HashMap<State, Integer>();
+	public static HashMap<State, Double> lookUpTable = new HashMap<State, Double>();
+	private State previousState;
+	private static int lives = 0;
+	private int steps = 0;
 	
 	public Hero(Position pos){
 		setPosition(pos);
-		setName("Hero");
+		setName(HERO_TYPE);
 		setColor(Color.BLUE);
+		previousState = new State(pos, pos);
+		lives++;
+	}
+	
+	public int getSteps(){
+		return steps;
 	}
 	
 	public void step(){
+		// increment steps
+		steps++;
+		
+		// get the possible positions agent can move
 		Position up = Utility.getPositionInDirection(getPosition(), Direction.NORTH);
 		Position down = Utility.getPositionInDirection(getPosition(), Direction.SOUTH);
 		Position left = Utility.getPositionInDirection(getPosition(), Direction.WEST);
 		Position right = Utility.getPositionInDirection(getPosition(), Direction.EAST);
 		
+		// get states based on positions
 		State upState = new State(getPosition(), up);
 		State downState = new State(getPosition(), down);
 		State leftState = new State(getPosition(), left);
 		State rightState = new State(getPosition(), right);
 		
-		ArrayList<Move> moves = new ArrayList<Move>(); 
 		
-		if(lookUpTable.get(upState) == null){
-			lookUpTable.put(upState, upState.getValueOfState());
-			moves.add(new Move(up, upState.getValueOfState()));
-		}
-		else{
-			moves.add(new Move(up, upState.getValueOfState()));
-		}
-		if(lookUpTable.get(downState) == null){
-			lookUpTable.put(downState, downState.getValueOfState());
-			moves.add(new Move(down, downState.getValueOfState()));
-		}
-		else{
-			moves.add(new Move(down, downState.getValueOfState()));
-		}
-		if(lookUpTable.get(leftState) == null){
-			lookUpTable.put(leftState, leftState.getValueOfState());
-			moves.add(new Move(left, leftState.getValueOfState()));
-		}
-		else{
-			moves.add(new Move(left, leftState.getValueOfState()));
-		}
-		if(lookUpTable.get(rightState) == null){
-			lookUpTable.put(rightState, rightState.getValueOfState());
-			moves.add(new Move(right, rightState.getValueOfState()));
-		}
-		else{
-			moves.add(new Move(right, rightState.getValueOfState()));
-		}
+		// initialize hashmap if state values are not already there
+		if(lookUpTable.get(upState) == null)
+			lookUpTable.put(upState, 0.0);
+		if(lookUpTable.get(downState) == null)
+			lookUpTable.put(downState, 0.0);
+		if(lookUpTable.get(leftState) == null)
+			lookUpTable.put(leftState, 0.0);	
+		if(lookUpTable.get(rightState) == null)
+			lookUpTable.put(rightState, 0.0);
+		
 
+		// create a list of possible moves
+		ArrayList<Move> moves = new ArrayList<Move>(); 
+		moves.add(new Move(upState, up, lookUpTable.get(upState)));
+		moves.add(new Move(downState, down, lookUpTable.get(downState)));
+		moves.add(new Move(leftState, left, lookUpTable.get(leftState)));
+		moves.add(new Move(rightState, right, lookUpTable.get(rightState)));
+	
+
+		// get information from best choice and random choice
 		int returnNum = 0;
 		Direction dir = Direction.NORTH;
+		State current = new State(0,0);
 		
+		// sort moves based on value (highest to lowest)
 		Collections.sort(moves);
 		Collections.reverse(moves);
+		
+		// pick whether to pick out of the best moves
+		// or pick a "random" choice
 		int pickOutOfBestMoves = randomObj.nextInt(10);
-		if(pickOutOfBestMoves > 5){
+		if(pickOutOfBestMoves > 5 - lives/10){
+			// get list of best moves if some maximum values are equal
+			// choose a move randomly out of the best moves list
+			// get information on move
 			ArrayList<Move> listOfBestMoves = getListOfBestMoves(moves);
 			int choice = randomObj.nextInt(listOfBestMoves.size());
 			dir = getDirectionFromAdjacentPosition(listOfBestMoves.get(choice).getPosition());
-			returnNum = move(dir);
+			current = listOfBestMoves.get(choice).getState();
 		}
 		else{
+			// pick a move "randomly"
+			// get information on move
 			int choice = (int)(Math.pow(randomObj.nextInt((int)(Math.pow(4*100, 1/1.3))), 1.3) / 100);
 			dir = getDirectionFromAdjacentPosition(moves.get(choice).getPosition());
-			returnNum = move(dir);
+			current = moves.get(choice).getState();
 		}
 		
-		/*int choice = randomObj.nextInt(4);
-		int returnNum = 0;
-		Direction dir = Direction.NORTH;
-		if(choice % 4 == 0){
-			dir = Direction.NORTH;
-			returnNum = move(Direction.NORTH);
-		}
-		else if(choice % 4 == 1){
-			dir = Direction.EAST;
-			returnNum = move(Direction.EAST);
-		}
-		else if(choice % 4 == 2){
-			dir = Direction.SOUTH;
-			returnNum = move(Direction.SOUTH);
-		}
-		else{
-			dir = Direction.WEST;
-			returnNum = move(Direction.WEST);
-		}*/
+		// do move
+		returnNum = move(dir);
 		
+		// check if the current state and previous state
+		// entries are initialized in hashmap
+		// if they aren't then initialize them to 0.0
+		if(lookUpTable.get(current) == null)
+			lookUpTable.put(current, 0.0);
+		
+		// calculate the newPreviousState value based on TD-learning
+		double newPreviousStateValue = lookUpTable.get(previousState) + 0.1*(-1 + (lookUpTable.get(current) - lookUpTable.get(previousState)));
+		lookUpTable.put(previousState, newPreviousStateValue);
+		previousState = current;
+		
+		// check if the move created a collision
 		if(returnNum == -1){
+			// if the collision was with an enemy
+			// set color to grey and end game
 			BasicObject obj = GameManager.getInstance().getObjectAtPosition(Utility.getPositionInDirection(getPosition(), dir));
 			if(obj.getName().compareTo(Enemy.ENEMY_TYPE) == 0){
 				setColor(Color.GRAY);
 				GameManager.getInstance().setGameOver(true);
 			}
+			// if collision was with goal
+			// set color to green and end game
 			if(obj.getName().compareTo(Goal.GOAL_TYPE) == 0){
 				setColor(Color.GREEN);
 				GameManager.getInstance().setGameOver(true);
@@ -119,7 +133,7 @@ public class Hero extends BasicObject{
 	public ArrayList<Move> getListOfBestMoves(ArrayList<Move> moves){
 		ArrayList<Move> possibleMoves = new ArrayList<Move>();
 		
-		int maximum = moves.get(0).getValue();
+		double maximum = moves.get(0).getValue();
 		int index = 0;
 		while(index < moves.size() && maximum == moves.get(index).getValue()){
 			index++;
