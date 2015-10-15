@@ -97,10 +97,12 @@ public class Hero extends BasicObject{
 		Collections.sort(moves);
 		Collections.reverse(moves);
 		
+		// Epsilon Random with TD RL or Utiltiy function
 		// pick whether to pick out of the best moves
 		// or pick a "random" choice
 		int pickOutOfBestMoves = randomObj.nextInt(10);
 		if(pickOutOfBestMoves > 5 - lives/10){
+		//if(pickOutOfBestMoves > 4){ // for half rand, half utility
 			// get list of best moves if some maximum values are equal
 			// choose a move randomly out of the best moves list
 			// get information on move
@@ -117,6 +119,21 @@ public class Hero extends BasicObject{
 			current = moves.get(choice).getState();
 		}
 		
+		/*// completely random movement
+		int choice = randomObj.nextInt(4);
+		if(choice % 4 == 0){
+			dir = Direction.NORTH;
+		}
+		else if(choice % 4 == 1){
+			dir = Direction.SOUTH;
+		}
+		else if(choice % 4 == 2){
+			dir = Direction.EAST;
+		}
+		else if(choice % 4 == 3){
+			dir = Direction.WEST;
+		}*/
+			
 		// do move
 		returnNum = move(dir);
 		
@@ -130,6 +147,7 @@ public class Hero extends BasicObject{
 		double newPreviousStateValue = lookUpTable.get(previousState) + 0.1*(-1 + (lookUpTable.get(current) - lookUpTable.get(previousState)));
 		lookUpTable.put(previousState, newPreviousStateValue);
 		previousState = current;
+		
 		
 		// check if the move created a collision
 		if(returnNum == -1){

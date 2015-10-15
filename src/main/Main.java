@@ -56,8 +56,8 @@ public class Main {
 		
 		Thread.sleep(500);
 		
-		long fps = 40;
-		long numOfGameStepsToSkip = 250;
+		long fps = 100;
+		long numOfGameStepsToSkip = 300;
 		long showResultForMilliseconds = 500;
 		Clock clock = new Clock();
 		for(int i = 0; i < 1000; i++){
@@ -131,7 +131,7 @@ public class Main {
 	 */
 	public static void setUpWindow(){
 		GameWindow gw = GameWindow.getInstance();
-		gw.startUp(1000, 1000);
+		gw.startUp(500, 500);
 		gw.setVisible(true);
 	}
 }

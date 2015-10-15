@@ -45,6 +45,11 @@ public class State {
 		this.closerToGoal = closerToGoal;
 	}
 	
+/*	// for utility function
+	public int getValue(){
+		return enemyProximity * -50 + goalProximity * 100 + (closerToGoal? 1:-1);
+	}*/
+	
 	public boolean equals(Object obj){
 		if(!(obj instanceof State))
 			return false;
