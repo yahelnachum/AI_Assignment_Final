@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Random;
+
 import boundaries.graphics.GameWindow;
 import entities.game.engine.base.GameManager;
 import entities.game.engine.base.Position;
@@ -24,10 +26,12 @@ public class Main {
 		gm.addToCollidableObjectsList(new Enemy(new Position(-100,-100)));
 		gm.addToCollidableObjectsList(new Goal(new Position(-100,-100)));
 		// set up game then set up window
-		setUpGame();
+		setUpLevel(1);
 		setUpWindow();
 		
-		Hero.lookUpTable.put(new State(0,3,true), 1000.0);
+		Hero.printTable();
+		
+		/*Hero.lookUpTable.put(new State(0,3,true), 1000.0);
 		Hero.lookUpTable.put(new State(1,3,true), 1000.0);
 		Hero.lookUpTable.put(new State(2,3,true), 1000.0);
 		
@@ -43,24 +47,17 @@ public class Main {
 		Hero.lookUpTable.put(new State(3,3,true), -1000.0);
 		Hero.lookUpTable.put(new State(3,2,true), -1000.0);
 		Hero.lookUpTable.put(new State(3,1,true), -1000.0);
-		Hero.lookUpTable.put(new State(3,0,true), -1000.0);
+		Hero.lookUpTable.put(new State(3,0,true), -1000.0);*/
 		
-		for(int j = 0; j < 4; j++){
-			for(int k = 0; k < 4; k++){
-				System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k, false)));
-				System.out.printf("%5.2f ", Hero.lookUpTable.get(new State(j,k, true)));
-			}
-			System.out.println();
-		}
-		System.out.println();
-		
-		Thread.sleep(500);
-		
-		long fps = 100;
-		long numOfGameStepsToSkip = 300;
-		long showResultForMilliseconds = 500;
+		long fps = 30;
+		long numOfGameStepsToSkip = 10000;
+		long showResultForMilliseconds = 5;
 		Clock clock = new Clock();
-		for(int i = 0; i < 1000; i++){
+		for(int i = 0; i < 100000; i++){
+			if(i == 100){
+				showResultForMilliseconds = 500;
+				numOfGameStepsToSkip = 100;
+			}
 			System.out.printf("Trial number: %d\n", i);
 			clock.delta();
 			// run game loop until game over
@@ -80,26 +77,29 @@ public class Main {
 			}
 			gw.repaint();
 			Thread.sleep(showResultForMilliseconds);
-			for(int j = 0; j < 4; j++){
-				for(int k = 0; k < 4; k++){
-					System.out.printf("%-10.2f ", Hero.lookUpTable.get(new State(j,k, false)));
-					System.out.printf("%-10.2f ", Hero.lookUpTable.get(new State(j,k, true)));
-				}
-				System.out.println();
-			}
+			Hero.printTable();
 			System.out.printf("Number of steps made: %d\n\n", ((Hero)gm.getObjectsWithName(Hero.HERO_TYPE).get(0)).getSteps());
 			gm.resetGame();
-			setUpGame();
-			
-			
+
+			setUpLevelOne();		
 		}
 	}
 	
-	/**
-	 * Set up the world width and height
-	 * Set up the game objects
-	 */
-	public static void setUpGame(){
+	public static void setUpLevel(int level){
+		switch(level){
+		case 1:
+			setUpLevelOne();
+			break;
+		case 2:
+			setUpLevelTwo();
+			break;
+		default:
+			setUpLevelThree();
+			break;
+		}
+	}
+	
+	public static void setUpLevelOne(){
 		Position center = new Position(17,17);
 		new Enemy(new Position(center.getX() - 1,center.getY()-1));
 		new Enemy(new Position(center.getX(),center.getY()-1));
@@ -121,7 +121,51 @@ public class Main {
 		for(int i = 0; i < 5; i++){
 			new Wall(new Position(15-i, 5-i));
 		}
+		
+		new Hero(new Position(0,0));
+	}
+	
+	public static void setUpLevelTwo(){
+		
+		new Enemy(new Position(5,3));
+		new Enemy(new Position(5,8));
+		new Enemy(new Position(5,13));
+		new Enemy(new Position(15,3));
+		new Enemy(new Position(15,8));
+		new Enemy(new Position(15,13));
+		for(int i = 0; i < 10; i++){
+			new Wall(new Position(i, 5));
+			new Wall(new Position(i+10, 10));
+			new Wall(new Position(i, 15));
+		}
 
+		new Goal (new Position(19,19));
+		
+		new Hero(new Position(0,0));
+	}
+	
+	public static void setUpLevelThree(){
+		new Goal (new Position(19,19));
+		
+		new Hero(new Position(0,0));
+	}
+	
+	public static void setUpRandomLevel(){
+		new Goal (new Position(19,19));
+		Random randomObj = new Random();
+		for(int i = 0; i < 10; i++){
+			Position pos = new Position(randomObj.nextInt(16) + 2, randomObj.nextInt(16) + 2);
+			if(!GameManager.getInstance().objectAtPosition(pos)){
+				new Enemy(pos);
+			}
+		}
+		
+		for(int i = 0; i < 10; i++){
+			Position pos = new Position(randomObj.nextInt(16) + 2, randomObj.nextInt(16) + 2);
+			if(!GameManager.getInstance().objectAtPosition(pos)){
+				new Wall(pos);
+			}
+		}
 		new Hero(new Position(0,0));
 	}
 	
@@ -131,7 +175,7 @@ public class Main {
 	 */
 	public static void setUpWindow(){
 		GameWindow gw = GameWindow.getInstance();
-		gw.startUp(500, 500);
+		gw.startUp(1000, 1000);
 		gw.setVisible(true);
 	}
 }

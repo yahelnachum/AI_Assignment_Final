@@ -19,6 +19,7 @@ public class Hero extends BasicObject{
 	public static HashMap<State, Double> lookUpTable = new HashMap<State, Double>();
 	private State previousState;
 	private static int lives = 0;
+	private static boolean initializeTable = false;
 	private int steps = 0;
 	
 	public Hero(Position pos){
@@ -27,6 +28,55 @@ public class Hero extends BasicObject{
 		setColor(new Color(0x00ffff));
 		previousState = new State(pos, pos);
 		lives++;
+		
+		if(!initializeTable){
+			initializeTable = true;
+			initializeTable();
+		}
+	}
+	
+	private void initializeTable(){
+		for(int i = 0; i < 4; i++){
+			for(int j = 0; j < 4; j++){
+				double value = 0.0;
+				
+				if( j == 3 & i != 3){
+					value = 1000.0;
+				}
+				if(i == 3){
+					value = -1000.0;
+				}
+				
+				lookUpTable.put(new State(i,j,true), value);
+				lookUpTable.put(new State(i,j,false), value);
+			}
+		}
+	}
+	
+	public static void printTable(){
+		for(int i = 0; i < 2; i++){
+			System.out.printf("Closer To Goal = %s\n", (i == 0)? "True":"False");
+			for(int j = 0; j < 4; j++){
+				for(int k = 0; k < 4; k++){
+					if(j == 0 && k == 0){
+						System.out.printf("Goal Proximity\n");
+						System.out.printf("%8d %8d %8d %8d Enemy Proximity\n", 0,1,2,3);
+					}
+					if(i == 0){
+						System.out.printf("%8.2f ", lookUpTable.get(new State(j,k,true)));
+					}
+					else{
+						System.out.printf("%8.2f ", lookUpTable.get(new State(j,k,false)));
+					}
+					
+					if(k == 3){
+						System.out.printf("%d", j);
+					}
+				}
+				System.out.println();
+			}
+			System.out.println();
+		}
 	}
 	
 	public int getSteps(){
@@ -53,8 +103,10 @@ public class Hero extends BasicObject{
 		
 		
 		// initialize hashmap if state values are not already there
-		if(lookUpTable.get(upState) == null)
+		if(lookUpTable.get(upState) == null){
 			lookUpTable.put(upState, 0.0);
+			System.out.println("here");
+		}
 		if(lookUpTable.get(downState) == null)
 			lookUpTable.put(downState, 0.0);
 		if(lookUpTable.get(leftState) == null)
@@ -63,7 +115,7 @@ public class Hero extends BasicObject{
 			lookUpTable.put(rightState, 0.0);
 		
 		int delta[] = new int[4];
-		if(GameManager.getInstance().getObjectAtPosition(up) != null && GameManager.getInstance().getObjectAtPosition(up).getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
+		/*if(GameManager.getInstance().getObjectAtPosition(up) != null && GameManager.getInstance().getObjectAtPosition(up).getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
 			BreadCrumb bc = (BreadCrumb) GameManager.getInstance().getObjectAtPosition(up);
 			delta[0] = bc.getStepMade();
 		}
@@ -78,7 +130,7 @@ public class Hero extends BasicObject{
 		if(GameManager.getInstance().getObjectAtPosition(right) != null && GameManager.getInstance().getObjectAtPosition(right).getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
 			BreadCrumb bc = (BreadCrumb) GameManager.getInstance().getObjectAtPosition(right);
 			delta[3] = bc.getStepMade();
-		}
+		}*/
 	
 		// create a list of possible moves
 		ArrayList<Move> moves = new ArrayList<Move>(); 
@@ -137,17 +189,7 @@ public class Hero extends BasicObject{
 		// do move
 		returnNum = move(dir);
 		
-		// check if the current state and previous state
-		// entries are initialized in hashmap
-		// if they aren't then initialize them to 0.0
-		if(lookUpTable.get(current) == null)
-			lookUpTable.put(current, 0.0);
-		
-		// calculate the newPreviousState value based on TD-learning
-		double newPreviousStateValue = lookUpTable.get(previousState) + 0.1*(-1 + (lookUpTable.get(current) - lookUpTable.get(previousState)));
-		lookUpTable.put(previousState, newPreviousStateValue);
-		previousState = current;
-		
+		int reward = -1;
 		
 		// check if the move created a collision
 		if(returnNum == -1){
@@ -167,11 +209,24 @@ public class Hero extends BasicObject{
 		}
 		if(returnNum == 0){
 			BasicObject obj = GameManager.getInstance().getObjectAtPosition(previousPos);
-			if(obj != null)
+			if(obj != null){
 				GameManager.getInstance().removeObectFromList(obj);
+			}
 			
 			new BreadCrumb(previousPos, GameManager.getInstance().getStepCount());
+			
 		}
+		
+		// check if the current state and previous state
+		// entries are initialized in hashmap
+		// if they aren't then initialize them to 0.0
+		if(lookUpTable.get(current) == null)
+			lookUpTable.put(current, 0.0);
+		
+		// calculate the newPreviousState value based on TD-learning
+		double newPreviousStateValue = lookUpTable.get(previousState) + 0.01*(reward + (lookUpTable.get(current) - lookUpTable.get(previousState)));
+		lookUpTable.put(previousState, newPreviousStateValue);
+		previousState = current;
 	}
 	
 	public ArrayList<Move> getListOfBestMoves(ArrayList<Move> moves){

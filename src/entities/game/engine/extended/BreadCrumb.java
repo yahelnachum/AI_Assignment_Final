@@ -8,7 +8,7 @@ import entities.game.engine.base.Position;
 
 public class BreadCrumb extends BasicObject{
 	public static final String BREADCRUMB_TYPE = "BrCr";
-	int slowdown = 20;
+	int slowdown = 1;
 	int countDown = slowdown;
 	int stepMade = 0;
 	static Color original = new Color(0xffffaa);
@@ -27,7 +27,7 @@ public class BreadCrumb extends BasicObject{
 			int g = original.getGreen();
 			int b = original.getBlue();
 			
-			r = (int)((double) r * (double)stepMade / (double) GameManager.getInstance().getStepCount());
+			r = (int)(((double) r) * ((double)stepMade) / ((double) GameManager.getInstance().getStepCount()));
 			g = (int)((double) g * (double)stepMade / (double) GameManager.getInstance().getStepCount());
 			b = (int)((double) b * (double)stepMade / (double) GameManager.getInstance().getStepCount());
 			setColor(new Color(r, g, b));
