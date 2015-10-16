@@ -26,7 +26,7 @@ public class Main {
 		gm.addToCollidableObjectsList(new Enemy(new Position(-100,-100)));
 		gm.addToCollidableObjectsList(new Goal(new Position(-100,-100)));
 		// set up game then set up window
-		setUpLevel(1);
+		setUpRandomLevel();	
 		setUpWindow();
 		
 		Hero.printTable();
@@ -54,9 +54,9 @@ public class Main {
 		long showResultForMilliseconds = 5;
 		Clock clock = new Clock();
 		for(int i = 0; i < 100000; i++){
-			if(i == 100){
+			if(i == 300){
 				showResultForMilliseconds = 500;
-				numOfGameStepsToSkip = 100;
+				numOfGameStepsToSkip = 10;
 			}
 			System.out.printf("Trial number: %d\n", i);
 			clock.delta();
@@ -81,7 +81,7 @@ public class Main {
 			System.out.printf("Number of steps made: %d\n\n", ((Hero)gm.getObjectsWithName(Hero.HERO_TYPE).get(0)).getSteps());
 			gm.resetGame();
 
-			setUpLevelOne();		
+			setUpRandomLevel();		
 		}
 	}
 	

@@ -25,7 +25,7 @@ public class Move implements Comparable<Move>{
 	}
 	
 	public double getValue(){
-		return value;// - delta;'
+		return value - (double)delta;
 		//return s.getValue(); // utility function
 	}
 

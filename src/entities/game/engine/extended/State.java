@@ -61,7 +61,7 @@ public class State {
 	}
 	
 	public int hashCode(){
-		return 1783*enemyProximity + 2969*goalProximity + (closerToGoal? 1637:1019);
+		return 1783*enemyProximity + 2969*goalProximity;// + (closerToGoal? 1637:1019);
 	}
 	
 	

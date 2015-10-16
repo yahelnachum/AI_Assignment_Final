@@ -101,21 +101,8 @@ public class Hero extends BasicObject{
 		State leftState = new State(getPosition(), left);
 		State rightState = new State(getPosition(), right);
 		
-		
-		// initialize hashmap if state values are not already there
-		if(lookUpTable.get(upState) == null){
-			lookUpTable.put(upState, 0.0);
-			System.out.println("here");
-		}
-		if(lookUpTable.get(downState) == null)
-			lookUpTable.put(downState, 0.0);
-		if(lookUpTable.get(leftState) == null)
-			lookUpTable.put(leftState, 0.0);	
-		if(lookUpTable.get(rightState) == null)
-			lookUpTable.put(rightState, 0.0);
-		
 		int delta[] = new int[4];
-		/*if(GameManager.getInstance().getObjectAtPosition(up) != null && GameManager.getInstance().getObjectAtPosition(up).getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
+		if(GameManager.getInstance().getObjectAtPosition(up) != null && GameManager.getInstance().getObjectAtPosition(up).getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
 			BreadCrumb bc = (BreadCrumb) GameManager.getInstance().getObjectAtPosition(up);
 			delta[0] = bc.getStepMade();
 		}
@@ -130,7 +117,7 @@ public class Hero extends BasicObject{
 		if(GameManager.getInstance().getObjectAtPosition(right) != null && GameManager.getInstance().getObjectAtPosition(right).getName().compareTo(BreadCrumb.BREADCRUMB_TYPE) == 0){
 			BreadCrumb bc = (BreadCrumb) GameManager.getInstance().getObjectAtPosition(right);
 			delta[3] = bc.getStepMade();
-		}*/
+		}
 	
 		// create a list of possible moves
 		ArrayList<Move> moves = new ArrayList<Move>(); 
@@ -153,7 +140,7 @@ public class Hero extends BasicObject{
 		// pick whether to pick out of the best moves
 		// or pick a "random" choice
 		int pickOutOfBestMoves = randomObj.nextInt(10);
-		if(pickOutOfBestMoves > 5 - lives/10){
+		if(pickOutOfBestMoves > 2 + 300/lives){
 		//if(pickOutOfBestMoves > 4){ // for half rand, half utility
 			// get list of best moves if some maximum values are equal
 			// choose a move randomly out of the best moves list
@@ -166,7 +153,7 @@ public class Hero extends BasicObject{
 		else{
 			// pick a move "randomly"
 			// get information on move
-			int choice = (int)(Math.pow(randomObj.nextInt((int)(Math.pow(4*100, 1/1.3))), 1.3) / 100);
+			int choice = randomObj.nextInt(4);//(int)(Math.pow(randomObj.nextInt((int)(Math.pow(4*100, 1/1.3))), 1.3) / 100);
 			dir = getDirectionFromAdjacentPosition(moves.get(choice).getPosition());
 			current = moves.get(choice).getState();
 		}
@@ -189,7 +176,7 @@ public class Hero extends BasicObject{
 		// do move
 		returnNum = move(dir);
 		
-		int reward = -1;
+		double reward = 0.0;//-1.0;
 		
 		// check if the move created a collision
 		if(returnNum == -1){
@@ -217,16 +204,11 @@ public class Hero extends BasicObject{
 			
 		}
 		
-		// check if the current state and previous state
-		// entries are initialized in hashmap
-		// if they aren't then initialize them to 0.0
-		if(lookUpTable.get(current) == null)
-			lookUpTable.put(current, 0.0);
-		
 		// calculate the newPreviousState value based on TD-learning
 		double newPreviousStateValue = lookUpTable.get(previousState) + 0.01*(reward + (lookUpTable.get(current) - lookUpTable.get(previousState)));
 		lookUpTable.put(previousState, newPreviousStateValue);
 		previousState = current;
+		
 	}
 	
 	public ArrayList<Move> getListOfBestMoves(ArrayList<Move> moves){
