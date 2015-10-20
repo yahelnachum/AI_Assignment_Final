@@ -1,11 +1,15 @@
 package entities.game.engine.base;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import entities.game.engine.extended.Goal;
+import entities.game.engine.extended.Hero;
 
 public class TestGameManager {
 
@@ -57,6 +61,20 @@ public class TestGameManager {
 		assertEquals(inst1.isObjectNameInAdjacentSquares("red", new Position(5,5), 2, 0), true);
 		assertEquals(inst1.isObjectNameInAdjacentSquares("blue", new Position(5,5), 2, 0), true);
 		
+	}
+	
+	@Test
+	public void testGetObjects() {
+		GameManager inst = GameManager.getInstance();
+		
+		new Goal(new Position(1,1));
+		new Hero(new Position(0,0));
+		
+		ArrayList<BasicObject> list = inst.getObjectsWithName(Hero.HERO_TYPE);
+		
+		assertEquals(list.size(), 1);
+		
+		inst.resetGame();
 	}
 
 }

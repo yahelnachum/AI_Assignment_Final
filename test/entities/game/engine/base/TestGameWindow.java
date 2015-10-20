@@ -21,7 +21,7 @@ public class TestGameWindow {
 		BasicObject obj1 = new BasicObject();
 		
 		GameWindow gw = GameWindow.getInstance();
-		gw.startUp(500, 600);
+		gw.startUp();
 		gw.setVisible(true);
 		
 		Thread.sleep(500);

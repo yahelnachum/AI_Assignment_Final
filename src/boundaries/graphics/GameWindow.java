@@ -1,18 +1,11 @@
 package boundaries.graphics;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.JFrame;
-import javax.swing.border.EmptyBorder;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-
-import java.awt.GridBagLayout;
-import java.awt.event.KeyAdapter;
 
 /**
  * @author Yahel
@@ -28,7 +21,7 @@ public class GameWindow extends JFrame {
 	private int window_position_y = 0;
 	
 	// single instance of the drawing panel as the content panel of the game window
-	private DrawingPanel contentPane = DrawingPanel.getInstance();
+	private GameWindowContentPanel contentPane = GameWindowContentPanel.getInstance();
 	
 	// single instance of the game window
 	private static GameWindow gameWindow = new GameWindow();
@@ -51,23 +44,33 @@ public class GameWindow extends JFrame {
 	 * @param width The width of the window wanted
 	 * @param height The height of the window wanted
 	 */
-	public void startUp(int width, int height){
+	public void startUp(){
 		// get screen dimension
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		// set the window height and width, center the window on the primary screen
-		window_width = width;
-		window_height = height;
+		// set the window height and width
+		window_width = (int)(dim.getWidth());
+		window_height = (int)(dim.getHeight());
+		
+		if(window_width < window_height)
+			window_height = window_width;
+		else
+			window_width = window_height;
+		
+		// center window on primary screen
 		window_position_x = (int) (dim.getWidth() / 2 - 7 - window_width / 2);
 		window_position_y = (int) (dim.getHeight() / 2 - 7 - window_height / 2);
 		
 		// set attributes of the window and content panel
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(window_position_x, window_position_y, window_width, window_height + WINDOW_BAR_HEIGHT);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
+		//contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		//contentPane.setLayout(new BorderLayout(0, 0));
+		//contentPane.setBounds(window_position_x, window_position_y, window_width, window_height + WINDOW_BAR_HEIGHT);
 		setContentPane(contentPane);
 		contentPane.startUp();
+		
+		setVisible(true);
 	}
 	
 	/**

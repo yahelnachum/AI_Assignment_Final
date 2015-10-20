@@ -61,11 +61,11 @@ public class DrawingPanel extends JPanel {
 		// initialize variables for game world positions for drawing
 		num_of_boxes_x = gm.getWorldWidth();
 		num_of_boxes_y = gm.getWorldHeight();
-		panelWidth = gw.getWindowWidth() - 16;
-		panelHeight = gw.getWindowHeight() - 16;
+		panelWidth = 0;//gw.getWindowWidth() - 16;
+		panelHeight = 0;//gw.getWindowHeight() - 16;
 		box_length_x = (panelWidth - margin * (num_of_boxes_x + 1)) / num_of_boxes_x;
 		box_length_y = (panelHeight - margin * (num_of_boxes_y + 1)) / num_of_boxes_y;
-		
+		System.out.printf("here %d, %d", panelWidth, panelHeight);
 		// calculate font
 		// get the longest name from the list of game objects
 		String longestString = "";
@@ -91,6 +91,8 @@ public class DrawingPanel extends JPanel {
 	 * Print out the game board and the objects on the board
 	 */
 	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		
 		// initialize the font
 		if(!fontInitialized){
 			g.setFont(new Font("Consolas", Font.PLAIN, heightFontSize));
@@ -110,8 +112,9 @@ public class DrawingPanel extends JPanel {
 			drawObject(g, objectList.get(i));
 		}
 		
-		BasicObject hero = GameManager.getInstance().getObjectsWithName(Hero.HERO_TYPE).get(0);
-		if(hero != null){
+		ArrayList<BasicObject> objList = GameManager.getInstance().getObjectsWithName(Hero.HERO_TYPE);
+		for(int i = 0; i < objList.size(); i++){
+			BasicObject hero = objList.get(i);
 			drawObject(g, hero);
 		}
 	}
@@ -130,5 +133,29 @@ public class DrawingPanel extends JPanel {
 		g.setColor(Color.BLACK);
 		g.drawString(obj.getName(), (int)x, (int)(y + box_length_y - 2));
 	}
-
+	
+	public void setWidthAndHeight(){
+		this.panelWidth = this.getWidth();
+		this.panelHeight = this.getHeight();
+		
+		box_length_x = (panelWidth - margin * (num_of_boxes_x + 1)) / num_of_boxes_x;
+		box_length_y = (panelHeight - margin * (num_of_boxes_y + 1)) / num_of_boxes_y;
+		
+		// calculate font
+		// get the longest name from the list of game objects
+		String longestString = "";
+		ArrayList<BasicObject> objectList = GameManager.getInstance().getObjectsList();
+		for (int i = 0; i < objectList.size(); i++){
+			if(objectList.get(i).getName().length() > longestString.length())
+				longestString = objectList.get(i).getName(); 
+		}
+		
+		// find the biggest size font that can print the name of the longest named object
+		for(int i = 8; i < 100; i++){
+			if(getFontMetrics(new Font("Consolas", Font.PLAIN, i)).stringWidth(longestString) > box_length_x){
+				heightFontSize = i-1;
+				i = 100;
+			}
+		}
+	}
 }
