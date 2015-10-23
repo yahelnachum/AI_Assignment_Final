@@ -17,6 +17,7 @@ public class Main {
 
 	public static void main(String[] args) throws InterruptedException {
 		
+		
 		ApplicationManager am = ApplicationManager.getInstance();
 		am.startUp();
 		am.run();

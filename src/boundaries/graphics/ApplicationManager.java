@@ -3,6 +3,9 @@ package boundaries.graphics;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import entities.game.engine.base.GameManager;
 import entities.game.engine.base.Position;
 import entities.game.engine.extended.BreadCrumb;
@@ -16,16 +19,25 @@ public class ApplicationManager {
 
 	private int fps = 30;
 	private int numOfGameStepsToSkip = 1;
-	private int timeToShowResults = 30;
+	private int timeToShowResults = 500;
 	private boolean stopRun = false;
 	private boolean runGame = false;
+	private boolean stepGame = false;
 	Clock clock = new Clock();
 	
 	ArrayList<WindowEvent> windowEvents = new ArrayList<WindowEvent>();
 	
 	private static ApplicationManager applicationManager = new ApplicationManager();
 	
-	private ApplicationManager(){}
+	private ApplicationManager(){
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	public static ApplicationManager getInstance(){
 		return applicationManager;
@@ -59,7 +71,7 @@ public class ApplicationManager {
 			clock.delta();
 			pollForWindowEvents();
 			
-			if(runGame){
+			if(runGame || stepGame){
 				if(!gm.getGameOver()){
 					gm.step();
 					
@@ -73,6 +85,10 @@ public class ApplicationManager {
 					gm.resetGame();
 					setUpRandomLevel();
 				}
+				
+				if(stepGame){
+					stepGame = false;
+				}
 			}
 			
 			long actualTime = clock.split();
@@ -84,8 +100,20 @@ public class ApplicationManager {
 	
 	public void pollForWindowEvents(){
 		for(int i = 0; i < windowEvents.size(); i++){
-			if(windowEvents.get(i).getWindowEventName() == WindowRunGameEvent.WINDOW_RUN_GAME_EVENT){
-				runGame = true;
+			if(windowEvents.get(i).getWindowEventName() == WindowGameEvent.WINDOW_GAME_EVENT){
+				WindowGameEvent wge = (WindowGameEvent) windowEvents.get(i);
+				
+				if(wge.getGameEvent() == WindowGameEvent.RUN_GAME_EVENT){
+					runGame = true;
+				}
+				else if(wge.getGameEvent() == WindowGameEvent.STOP_GAME_EVENT){
+					runGame = false;
+					stepGame = false;
+				}
+				else if(wge.getGameEvent() == WindowGameEvent.STEP_GAME_EVENT){
+					stepGame = true;
+				}
+				
 			}
 			else if(windowEvents.get(i).getWindowEventName() == WindowSliderEvent.WINDOW_SLIDER_EVENT){
 				WindowSliderEvent wse = (WindowSliderEvent) windowEvents.get(i);
@@ -94,6 +122,9 @@ public class ApplicationManager {
 					fps = wse.getSliderValue();
 				else if(wse.getSliderEventName() == WindowSliderEvent.GAME_STEPS_TO_SKIP_SLIDER_EVENT){
 					numOfGameStepsToSkip = wse.getSliderValue();
+				}
+				else if(wse.getSliderEventName() == WindowSliderEvent.TIME_TO_SHOW_RESULTS_EVENT){
+					timeToShowResults = wse.getSliderValue();
 				}
 			}
 		}
@@ -123,5 +154,15 @@ public class ApplicationManager {
 		}
 		new Hero(new Position(0,0));
 		new BreadCrumb(new Position(0,0), 0);
+	}
+	
+	public int getFPS(){
+		return fps;
+	}
+	public int getNumberOfGameStepsToSkip(){
+		return numOfGameStepsToSkip;
+	}
+	public int getTimeToShowResults(){
+		return timeToShowResults;
 	}
 }
