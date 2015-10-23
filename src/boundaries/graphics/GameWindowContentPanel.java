@@ -44,7 +44,7 @@ public class GameWindowContentPanel extends JPanel {
 		gridBagLayout.rowWeights = new double[]{1.0, 10.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
-		RunButtonPanel panel = RunButtonPanel.getInstance();
+		UserInterfacePanel panel = UserInterfacePanel.getInstance();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.insets = new Insets(0, 0, 5, 0);
 		gbc_panel.fill = GridBagConstraints.BOTH;

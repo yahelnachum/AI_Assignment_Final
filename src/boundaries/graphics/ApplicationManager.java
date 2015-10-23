@@ -87,7 +87,18 @@ public class ApplicationManager {
 			if(windowEvents.get(i).getWindowEventName() == WindowRunGameEvent.WINDOW_RUN_GAME_EVENT){
 				runGame = true;
 			}
+			else if(windowEvents.get(i).getWindowEventName() == WindowSliderEvent.WINDOW_SLIDER_EVENT){
+				WindowSliderEvent wse = (WindowSliderEvent) windowEvents.get(i);
+				
+				if(wse.getSliderEventName() == WindowSliderEvent.FPS_SLIDER_EVENT)
+					fps = wse.getSliderValue();
+				else if(wse.getSliderEventName() == WindowSliderEvent.GAME_STEPS_TO_SKIP_SLIDER_EVENT){
+					numOfGameStepsToSkip = wse.getSliderValue();
+				}
+			}
 		}
+		
+		windowEvents.clear();
 	}
 	
 	public void addWindowEvent(WindowEvent we){
