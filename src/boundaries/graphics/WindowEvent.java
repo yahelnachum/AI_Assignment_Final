@@ -4,6 +4,7 @@ public class WindowEvent {
 
 	public static final String WINDOW_EVENT_NAME = "Basic Window Event";
 	private String name = "";
+	
 	public WindowEvent(){
 		name = WINDOW_EVENT_NAME;
 	}

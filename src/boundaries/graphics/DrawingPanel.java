@@ -65,7 +65,7 @@ public class DrawingPanel extends JPanel {
 		panelHeight = 0;//gw.getWindowHeight() - 16;
 		box_length_x = (panelWidth - margin * (num_of_boxes_x + 1)) / num_of_boxes_x;
 		box_length_y = (panelHeight - margin * (num_of_boxes_y + 1)) / num_of_boxes_y;
-		System.out.printf("here %d, %d", panelWidth, panelHeight);
+
 		// calculate font
 		// get the longest name from the list of game objects
 		String longestString = "";
@@ -112,13 +112,19 @@ public class DrawingPanel extends JPanel {
 			drawObject(g, objectList.get(i));
 		}
 		
+		// draw hero object over other objects
 		ArrayList<BasicObject> objList = GameManager.getInstance().getObjectsWithName(Hero.HERO_TYPE);
 		for(int i = 0; i < objList.size(); i++){
 			BasicObject hero = objList.get(i);
 			drawObject(g, hero);
 		}
 	}
-	
+
+	/**
+	 * Draw a game object on the screen
+	 * @param g Graphics
+	 * @param obj BasicObject
+	 */
 	public void drawObject(Graphics g, BasicObject obj){
 		// get position and calculate panel position
 		Position pos = obj.getPosition();
@@ -134,10 +140,16 @@ public class DrawingPanel extends JPanel {
 		g.drawString(obj.getName(), (int)x, (int)(y + box_length_y - 2));
 	}
 	
+	/**
+	 * Set width and height of the panel to the current width and height
+	 * Recalculate box lengths and font size
+	 */
 	public void setWidthAndHeight(){
+		// get panel width and height
 		this.panelWidth = this.getWidth();
 		this.panelHeight = this.getHeight();
 		
+		// redo box lengths
 		box_length_x = (panelWidth - margin * (num_of_boxes_x + 1)) / num_of_boxes_x;
 		box_length_y = (panelHeight - margin * (num_of_boxes_y + 1)) / num_of_boxes_y;
 		

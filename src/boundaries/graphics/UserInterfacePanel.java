@@ -13,46 +13,59 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JLabel;
+
 import java.awt.Component;
+
 import javax.swing.JProgressBar;
+
 import java.awt.BorderLayout;
+
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
+
 import java.awt.SystemColor;
+
 import javax.swing.BoxLayout;
 
-public class UserInterfacePanel extends JPanel {
+import controllers.ui.FramesPerSecondSliderController;
+import controllers.ui.GameStepsToSkipController;
+import controllers.ui.RunButtonController;
+import controllers.ui.StepButtonController;
+import controllers.ui.StopButtonController;
+import controllers.ui.TimeToShowResultController;
 
+public class UserInterfacePanel extends JPanel {
 	
 	private static UserInterfacePanel runButtonPanel = new UserInterfacePanel();
 	
-	JButton runButton = new JButton("Run");
+	private JButton runButton = new JButton("Run");
+	private JButton stepButton = new JButton("Step");
+	private JButton stopButton = new JButton("Stop");
 	
-	JSlider fpsSlider = new JSlider();
-	JSlider gameStepsSlider = new JSlider();
-	JSlider resultsTimeSlider = new JSlider();
+	private JSlider fpsSlider = new JSlider();
+	private JSlider gameStepsSlider = new JSlider();
+	private JSlider resultsTimeSlider = new JSlider();
 	
 	private JLabel fpsLabel = new JLabel(String.valueOf(ApplicationManager.getInstance().getFPS()));
 	private JLabel gameStepsLabel = new JLabel(String.valueOf(ApplicationManager.getInstance().getNumberOfGameStepsToSkip()));
 	private JLabel resultsTimeLabel = new JLabel(String.valueOf(ApplicationManager.getInstance().getTimeToShowResults()));
 	
-	JPanel panelForResultsTime = new JPanel();
-	JPanel panelForGameSteps = new JPanel();
-	JPanel panelForFPSSlider = new JPanel();
-	JPanel panelForRunButton = new JPanel();
+	private JPanel panelForResultsTime = new JPanel();
+	private JPanel panelForGameSteps = new JPanel();
+	private JPanel panelForFPSSlider = new JPanel();
+	private JPanel panelForRunButton = new JPanel();
+	private JPanel panelForStopButton = new JPanel();
+	private JPanel panelForStepButton = new JPanel();
 	
 	private JTextArea txtrFramesPerSecond = new JTextArea();
 	private JTextArea txtrNumberOfGame = new JTextArea();
 	private JTextArea txtrTimeToShow = new JTextArea();
-	private JPanel panelForStopButton = new JPanel();
-	private JPanel panelForStepButton = new JPanel();
-	private JButton stepButton = new JButton("Step");
-	private JButton stopButton = new JButton("Stop");
 	
 	/**
 	 * Create the panel.
 	 */
 	private UserInterfacePanel() {
+		/* Set up general gridbaglayout */
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{23, 0, 0, 0};
@@ -60,6 +73,8 @@ public class UserInterfacePanel extends JPanel {
 		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
+		/* Panel for the frames per second slider 
+		 * Then attributes set for frames per second slider */
 		GridBagConstraints gbc_panelForFPSSlider = new GridBagConstraints();
 		gbc_panelForFPSSlider.insets = new Insets(0, 0, 5, 5);
 		gbc_panelForFPSSlider.fill = GridBagConstraints.BOTH;
@@ -67,21 +82,17 @@ public class UserInterfacePanel extends JPanel {
 		gbc_panelForFPSSlider.gridy = 0;
 		add(panelForFPSSlider, gbc_panelForFPSSlider);
 		panelForFPSSlider.setLayout(new BorderLayout(0, 0));
-		
+		fpsSlider.setSnapToTicks(true);
+		fpsSlider.setMajorTickSpacing(100);
+		fpsSlider.setMinorTickSpacing(10);
+		fpsSlider.setPaintLabels(true);
+		fpsSlider.setPaintTicks(true);
 		panelForFPSSlider.add(fpsSlider, BorderLayout.CENTER);
 		fpsSlider.setMaximum(500);
 		fpsSlider.setValue(30);
 		fpsSlider.setPreferredSize(new Dimension(500, 26));
-		fpsSlider.setMinimum(1);
 		
-		fpsSlider.addChangeListener(new ChangeListener(){
-			public void stateChanged(ChangeEvent e){
-				int jSliderValue = ((JSlider)e.getSource()).getValue();
-				ApplicationManager.getInstance().addWindowEvent(new WindowSliderEvent(jSliderValue, WindowSliderEvent.FPS_SLIDER_EVENT));
-				UserInterfacePanel.getInstance().getFPSLabel().setText(String.valueOf(jSliderValue));
-			}
-		});
-		
+		/* Text area to display the frames per second info*/
 		GridBagConstraints gbc_txtrFramesPerSecond = new GridBagConstraints();
 		gbc_txtrFramesPerSecond.insets = new Insets(0, 0, 5, 5);
 		gbc_txtrFramesPerSecond.fill = GridBagConstraints.BOTH;
@@ -94,6 +105,7 @@ public class UserInterfacePanel extends JPanel {
 		txtrFramesPerSecond.setText("Frames \r\nPer \r\nSecond");
 		add(txtrFramesPerSecond, gbc_txtrFramesPerSecond);
 		
+		/* Label to show current frames per second */
 		GridBagConstraints gbc_fpsLabel = new GridBagConstraints();
 		gbc_fpsLabel.anchor = GridBagConstraints.WEST;
 		gbc_fpsLabel.insets = new Insets(0, 0, 5, 0);
@@ -101,6 +113,7 @@ public class UserInterfacePanel extends JPanel {
 		gbc_fpsLabel.gridy = 0;
 		add(fpsLabel, gbc_fpsLabel);
 		
+		/* Panel for the run button */
 		GridBagConstraints gbc_panelForRunButton = new GridBagConstraints();
 		gbc_panelForRunButton.gridwidth = 2;
 		gbc_panelForRunButton.gridheight = 2;
@@ -114,30 +127,8 @@ public class UserInterfacePanel extends JPanel {
 		panelForRunButton.add(runButton, BorderLayout.CENTER);
 		runButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		runButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // This is only called when the user releases the mouse button.
-                
-				ApplicationManager.getInstance().addWindowEvent(new WindowGameEvent(WindowGameEvent.RUN_GAME_EVENT));
-            }
-        });
-		
-		stopButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // This is only called when the user releases the mouse button.
-                
-				ApplicationManager.getInstance().addWindowEvent(new WindowGameEvent(WindowGameEvent.STOP_GAME_EVENT));
-            }
-        });
-		
-		stepButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // This is only called when the user releases the mouse button.
-                
-				ApplicationManager.getInstance().addWindowEvent(new WindowGameEvent(WindowGameEvent.STEP_GAME_EVENT));
-            }
-        });
-		
+		/* Panel for game steps slider
+		 * Then attributes set for slider */
 		GridBagConstraints gbc_panelForGameSteps = new GridBagConstraints();
 		gbc_panelForGameSteps.insets = new Insets(0, 0, 5, 5);
 		gbc_panelForGameSteps.fill = GridBagConstraints.BOTH;
@@ -145,20 +136,17 @@ public class UserInterfacePanel extends JPanel {
 		gbc_panelForGameSteps.gridy = 1;
 		add(panelForGameSteps, gbc_panelForGameSteps);
 		panelForGameSteps.setLayout(new BorderLayout(0, 0));
+		gameStepsSlider.setMajorTickSpacing(10);
+		gameStepsSlider.setMinorTickSpacing(5);
+		gameStepsSlider.setSnapToTicks(true);
+		gameStepsSlider.setPaintLabels(true);
+		gameStepsSlider.setPaintTicks(true);
 		
 		panelForGameSteps.add(gameStepsSlider, BorderLayout.CENTER);
 		gameStepsSlider.setValue(1);
 		gameStepsSlider.setPreferredSize(new Dimension(500, 26));
-		gameStepsSlider.setMinimum(1);
 		
-		gameStepsSlider.addChangeListener(new ChangeListener(){
-			public void stateChanged(ChangeEvent e){
-				int jSliderValue = ((JSlider)e.getSource()).getValue();
-				ApplicationManager.getInstance().addWindowEvent(new WindowSliderEvent(jSliderValue, WindowSliderEvent.GAME_STEPS_TO_SKIP_SLIDER_EVENT));
-				UserInterfacePanel.getInstance().getGameStepsToSkipLabel().setText(String.valueOf(jSliderValue));
-			}
-		});
-		
+		/* Info for number of game steps to skip */
 		GridBagConstraints gbc_txtrNumberOfGame = new GridBagConstraints();
 		gbc_txtrNumberOfGame.insets = new Insets(0, 0, 5, 5);
 		gbc_txtrNumberOfGame.fill = GridBagConstraints.BOTH;
@@ -171,6 +159,7 @@ public class UserInterfacePanel extends JPanel {
 		txtrNumberOfGame.setBackground(SystemColor.menu);
 		add(txtrNumberOfGame, gbc_txtrNumberOfGame);
 		
+		/* Label to show current number of game steps to skip */
 		GridBagConstraints gbc_gameStepsLabel = new GridBagConstraints();
 		gbc_gameStepsLabel.anchor = GridBagConstraints.WEST;
 		gbc_gameStepsLabel.insets = new Insets(0, 0, 5, 0);
@@ -178,6 +167,8 @@ public class UserInterfacePanel extends JPanel {
 		gbc_gameStepsLabel.gridy = 1;
 		add(gameStepsLabel, gbc_gameStepsLabel);
 		
+		/* Panel for the stop button
+		 * Then add button to the panel */
 		GridBagConstraints gbc_panelForStopButton = new GridBagConstraints();
 		gbc_panelForStopButton.insets = new Insets(0, 0, 0, 5);
 		gbc_panelForStopButton.fill = GridBagConstraints.BOTH;
@@ -188,6 +179,8 @@ public class UserInterfacePanel extends JPanel {
 		
 		panelForStopButton.add(stopButton);
 		
+		/* Panel for thes step button
+		 * Then add the step button to the panel */
 		GridBagConstraints gbc_panelForStepButton = new GridBagConstraints();
 		gbc_panelForStepButton.insets = new Insets(0, 0, 0, 5);
 		gbc_panelForStepButton.fill = GridBagConstraints.BOTH;
@@ -198,6 +191,8 @@ public class UserInterfacePanel extends JPanel {
 		
 		panelForStepButton.add(stepButton, BorderLayout.CENTER);
 		
+		/* Panel for the time to show results slider
+		 * Then set attributes for the slider */
 		GridBagConstraints gbc_panelForResultsTime = new GridBagConstraints();
 		gbc_panelForResultsTime.insets = new Insets(0, 0, 0, 5);
 		gbc_panelForResultsTime.fill = GridBagConstraints.BOTH;
@@ -205,20 +200,17 @@ public class UserInterfacePanel extends JPanel {
 		gbc_panelForResultsTime.gridy = 2;
 		add(panelForResultsTime, gbc_panelForResultsTime);
 		panelForResultsTime.setLayout(new BorderLayout(0, 0));
+		resultsTimeSlider.setMajorTickSpacing(100);
+		resultsTimeSlider.setMinorTickSpacing(50);
+		resultsTimeSlider.setSnapToTicks(true);
+		resultsTimeSlider.setPaintTicks(true);
+		resultsTimeSlider.setPaintLabels(true);
 		
 		panelForResultsTime.add(resultsTimeSlider);
-		resultsTimeSlider.setMinimum(1);
 		resultsTimeSlider.setMaximum(1000);
 		resultsTimeSlider.setValue(500);
 		
-		resultsTimeSlider.addChangeListener(new ChangeListener(){
-			public void stateChanged(ChangeEvent e){
-				int jSliderValue = ((JSlider)e.getSource()).getValue();
-				ApplicationManager.getInstance().addWindowEvent(new WindowSliderEvent(jSliderValue, WindowSliderEvent.TIME_TO_SHOW_RESULTS_EVENT));
-				UserInterfacePanel.getInstance().getTimeToShowResultsLabel().setText(String.valueOf(jSliderValue));
-			}
-		});
-		
+		/* Info to show for time to show results */
 		GridBagConstraints gbc_txtrTimeToShow = new GridBagConstraints();
 		gbc_txtrTimeToShow.insets = new Insets(0, 0, 0, 5);
 		gbc_txtrTimeToShow.fill = GridBagConstraints.BOTH;
@@ -231,11 +223,20 @@ public class UserInterfacePanel extends JPanel {
 		txtrTimeToShow.setBackground(SystemColor.menu);
 		add(txtrTimeToShow, gbc_txtrTimeToShow);
 		
+		/* Label to show current time to show results */
 		GridBagConstraints gbc_resultsTimeLabel = new GridBagConstraints();
 		gbc_resultsTimeLabel.anchor = GridBagConstraints.WEST;
 		gbc_resultsTimeLabel.gridx = 4;
 		gbc_resultsTimeLabel.gridy = 2;
 		add(resultsTimeLabel, gbc_resultsTimeLabel);
+		
+		/* Add listeners to the sliders and the buttons */
+		fpsSlider.addChangeListener(new FramesPerSecondSliderController());
+		runButton.addActionListener(new RunButtonController());
+		stopButton.addActionListener(new StopButtonController());
+		stepButton.addActionListener(new StepButtonController());
+		gameStepsSlider.addChangeListener(new GameStepsToSkipController());
+		resultsTimeSlider.addChangeListener(new TimeToShowResultController());
 	}
 	
 	public static UserInterfacePanel getInstance(){
